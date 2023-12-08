@@ -122,17 +122,15 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(context, AlarmReceiver::class.java)
-        val alarmPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-
-        Toast.makeText(context, "ALARM SET -----  ALARM  SET", Toast.LENGTH_SHORT).show()
+        val alarmPendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, 60000, alarmPendingIntent);
-
-        val i = Intent(AlarmClock.ACTION_SET_ALARM)
-        i.putExtra(AlarmClock.EXTRA_HOUR, hour)
-        i.putExtra(AlarmClock.EXTRA_MINUTES, minutes)
-        i.putExtra(AlarmClock.EXTRA_MESSAGE, title)
-        i.putExtra(AlarmClock.EXTRA_SKIP_UI, skipUi)
-        activity.startActivity(i)
+        Toast.makeText(context, "ALARM SET -----  ALARM  SET", Toast.LENGTH_SHORT).show()
+//        val i = Intent(AlarmClock.ACTION_SET_ALARM)
+//        i.putExtra(AlarmClock.EXTRA_HOUR, hour)
+//        i.putExtra(AlarmClock.EXTRA_MINUTES, minutes)
+//        i.putExtra(AlarmClock.EXTRA_MESSAGE, title)
+//        i.putExtra(AlarmClock.EXTRA_SKIP_UI, skipUi)
+//        activity.startActivity(i)
     }
 
     /**
