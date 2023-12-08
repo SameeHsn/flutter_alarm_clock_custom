@@ -1,0 +1,22 @@
+name: flutter_alarm_clock_example
+description: Demonstrates how to use the flutter_alarm_clock plugin.
+publish_to: 'none'
+
+environment:
+  sdk: '>=2.14.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_alarm_clock:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  very_good_analysis: ^5.0.0+1
+
+flutter:
+  uses-material-design: true
