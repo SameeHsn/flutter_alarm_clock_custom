@@ -19,6 +19,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
 import android.content.Context.ALARM_SERVICE
 import android.app.AlarmManager;
+import java.util.*
 import android.app.PendingIntent;
 import android.view.View;
 import android.widget.Toast;
@@ -119,14 +120,15 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
     private fun createAlarm(hour: Int, minutes: Int, title: String? = "", skipUi: Boolean? = true) {
         android.util.Log.d(TAG, "createAlarm: is in method creating alarm")
 
+        val randomId = Random().nextInt(Int.MAX_VALUE)
         val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AlarmReceiver::class.java)
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, randomId, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         // Set the alarm to trigger after 10 seconds (for demonstration)
-        val alarmTriggerTime: Long = System.currentTimeMillis() + 60000 // 10 seconds
+        val alarmTriggerTime: Long = System.currentTimeMillis() + 10000 // 10 seconds
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTriggerTime, pendingIntent)
-
+        android.util.Log.d(TAG, "createAlarm alarmTriggerTime: $alarmTriggerTime")
 
         val i = Intent(AlarmClock.ACTION_SET_ALARM)
         i.putExtra(AlarmClock.EXTRA_HOUR, hour)
