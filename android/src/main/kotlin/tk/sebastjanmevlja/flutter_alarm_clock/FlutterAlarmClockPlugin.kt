@@ -119,7 +119,7 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
      */
     private fun createAlarm(hour: Int, minutes: Int, title: String? = "", skipUi: Boolean? = true) {
         android.util.Log.d(TAG, "createAlarm: is in method creating alarm")
-
+        try {
         val randomId = Random().nextInt(Int.MAX_VALUE)
         val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AlarmReceiver::class.java)
@@ -129,7 +129,10 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTriggerTime, pendingIntent)
         android.util.Log.d(TAG, "createAlarm alarmTriggerTime: $alarmTriggerTime")
-
+        }
+        catch (e: Exception) {
+            Log.e("Exception in  createAlarm:", e.toString())
+        }
         val i = Intent(AlarmClock.ACTION_SET_ALARM)
         i.putExtra(AlarmClock.EXTRA_HOUR, hour)
         i.putExtra(AlarmClock.EXTRA_MINUTES, minutes)
