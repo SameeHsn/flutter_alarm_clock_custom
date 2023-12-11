@@ -120,8 +120,8 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         android.util.Log.d(TAG, "createAlarm: is in method creating alarm")
 
         val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
-        val intent = Intent(this, AlarmReceiver::class.java)
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        val intent = Intent(context, AlarmReceiver::class.java)
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
         // Set the alarm to trigger after 10 seconds (for demonstration)
         val alarmTriggerTime: Long = System.currentTimeMillis() + 60000 // 10 seconds
 
