@@ -144,11 +144,6 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
         Toast.makeText(context, "ALARM SET -----  ALARM  SET", Toast.LENGTH_SHORT).show()
 
-        val receiver = AlarmReceiver()
-        val filter = IntentFilter()
-        filter.addAction(Intent.ACTION_ALARM_CHANGED)
-        registerReceiver(receiver, filter)
-
 //        val alarmListener = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 //            object : AlarmManager.OnAlarmListener {
 //                override fun onAlarm() {
