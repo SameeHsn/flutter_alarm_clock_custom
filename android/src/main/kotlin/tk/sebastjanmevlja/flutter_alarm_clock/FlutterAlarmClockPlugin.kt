@@ -128,11 +128,15 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         val alarmTriggerTime: Long = System.currentTimeMillis() + 10000 // 10 seconds
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTriggerTime, pendingIntent)
+
+        AlarmReceiver().onReceive(context,intent)
+
         android.util.Log.d(TAG, "createAlarm alarmTriggerTime: $alarmTriggerTime")
         }
         catch (e: Exception) {
-            Log.e("Exception in  createAlarm:", e.toString())
+            Log.e("Excep in createAlarm:", e.toString())
         }
+
         val i = Intent(AlarmClock.ACTION_SET_ALARM)
         i.putExtra(AlarmClock.EXTRA_HOUR, hour)
         i.putExtra(AlarmClock.EXTRA_MINUTES, minutes)
@@ -141,6 +145,12 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         activity.startActivity(i)
 
         Toast.makeText(context, "ALARM SET -----  ALARM  SET", Toast.LENGTH_SHORT).show()
+
+        AlarmManager.OnAlarmListener {
+            Toast.makeText(context, "is in alarm manager OnAlarmListener", Toast.LENGTH_SHORT).show()
+            android.util.Log.d("TAG", "createAlarm is in alarm manager: OnAlarmListener")
+        }
+
     }
 
     /**
