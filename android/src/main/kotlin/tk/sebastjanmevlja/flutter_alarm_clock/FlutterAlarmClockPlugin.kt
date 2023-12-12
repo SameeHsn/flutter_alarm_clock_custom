@@ -140,7 +140,7 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
 
 
-        val i = Intent(AlarmClock.ACTION_SET_ALARM).apply {  action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM }
+        val i = Intent(AlarmClock.ACTION_SET_ALARM)
         i.putExtra(AlarmClock.EXTRA_HOUR, hour)
         i.putExtra(AlarmClock.EXTRA_MINUTES, minutes)
         i.putExtra(AlarmClock.EXTRA_MESSAGE, title)
