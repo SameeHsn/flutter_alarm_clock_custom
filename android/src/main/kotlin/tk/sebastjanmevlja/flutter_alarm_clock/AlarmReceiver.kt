@@ -16,6 +16,7 @@ class AlarmReceiver: BroadcastReceiver() {
     //we will use vibrator first
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     vibrator.vibrate(4000)
+    android.util.Log.d(TAG, "onReceive: wake  up wake up")
     Toast.makeText(context, "Alarm! Wake up! Wake up!", Toast.LENGTH_LONG).show()
     var alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
     if (alarmUri == null) {
