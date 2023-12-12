@@ -125,7 +125,7 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         val intent = Intent(context, AlarmReceiver::class.java)
         val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, randomId, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         // Set the alarm to trigger after 10 seconds (for demonstration)
-        val alarmTriggerTime: Long = System.currentTimeMillis() + 10000 // 10 seconds
+        val alarmTriggerTime: Long = System.currentTimeMillis() + 60000 // 10 seconds
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTriggerTime, pendingIntent)
 
@@ -144,17 +144,22 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
         Toast.makeText(context, "ALARM SET -----  ALARM  SET", Toast.LENGTH_SHORT).show()
 
-        val alarmListener = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            object : AlarmManager.OnAlarmListener {
-                override fun onAlarm() {
-                    // Do your logic here
-                    Log.d("AlarmListener", "Alarm is ringing!")
-                }
-            }
-        } else {
-            Log.d("AlarmListener", "TODO(VERSION.SDK_INT < N)")
-            TODO("VERSION.SDK_INT < N")
-        }
+        val receiver = AlarmReceiver()
+        val filter = IntentFilter()
+        filter.addAction(Intent.ACTION_ALARM_CHANGED)
+        registerReceiver(receiver, filter)
+
+//        val alarmListener = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            object : AlarmManager.OnAlarmListener {
+//                override fun onAlarm() {
+//                    // Do your logic here
+//                    Log.d("AlarmListener", "Alarm is ringing!")
+//                }
+//            }
+//        } else {
+//            Log.d("AlarmListener", "TODO(VERSION.SDK_INT < N)")
+//            TODO("VERSION.SDK_INT < N")
+//        }
 
     }
 
