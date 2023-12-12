@@ -29,8 +29,6 @@ import android.src.main.kotlin.tk.sebastjanmevlja.flutter_alarm_clock.AlarmRecei
 
 import android.os.Bundle
 import android.provider.Settings
-import androidx.appcompat.app.AppCompatActivity
-import java.util.Calendar
 /** FlutterAlarmClockPlugin */
 class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     /// The MethodChannel that will the communication between Flutter and native Android
