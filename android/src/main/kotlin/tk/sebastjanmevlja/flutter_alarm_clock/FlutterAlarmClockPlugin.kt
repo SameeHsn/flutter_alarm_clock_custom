@@ -26,6 +26,11 @@ import android.widget.Toast;
 import java.util.Calendar;
 import android.widget.TimePicker;
 import android.src.main.kotlin.tk.sebastjanmevlja.flutter_alarm_clock.AlarmReceiver
+
+import android.os.Bundle
+import android.provider.Settings
+import androidx.appcompat.app.AppCompatActivity
+import java.util.Calendar
 /** FlutterAlarmClockPlugin */
 class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     /// The MethodChannel that will the communication between Flutter and native Android
@@ -118,24 +123,26 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
      * @param skipUi Boolean? AlarmClock.EXTRA_SKIP_UI (don't open the clock app)
      */
     private fun createAlarm(hour: Int, minutes: Int, title: String? = "", skipUi: Boolean? = true) {
-        Log.d(TAG, "createAlarm: is in method creating alarm")
-        try {
-        val randomId = Random().nextInt(Int.MAX_VALUE)
-        val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmReceiver::class.java)
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, randomId, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-        // Set the alarm to trigger after 10 seconds (for demonstration)
-        val alarmTriggerTime: Long = System.currentTimeMillis() + 60000 // 10 seconds
+//        Log.d(TAG, "createAlarm: is in method creating alarm")
+//        try {
+//        val randomId = Random().nextInt(Int.MAX_VALUE)
+//        val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
+//        val intent = Intent(context, AlarmReceiver::class.java)
+//        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, randomId, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+//        // Set the alarm to trigger after 10 seconds (for demonstration)
+//        val alarmTriggerTime: Long = System.currentTimeMillis() + 60000 // 10 seconds
+//
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTriggerTime, pendingIntent)
+//
+//        Log.d(TAG, "createAlarm alarmTriggerTime: $alarmTriggerTime")
+//        }
+//        catch (e: Exception) {
+//            Log.e("Excep in createAlarm:", e.toString())
+//        }
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTriggerTime, pendingIntent)
 
-        Log.d(TAG, "createAlarm alarmTriggerTime: $alarmTriggerTime")
-        }
-        catch (e: Exception) {
-            Log.e("Excep in createAlarm:", e.toString())
-        }
 
-        val i = Intent(AlarmClock.ACTION_SET_ALARM)
+        val i = Intent(AlarmClock.ACTION_SET_ALARM).apply {  action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM }
         i.putExtra(AlarmClock.EXTRA_HOUR, hour)
         i.putExtra(AlarmClock.EXTRA_MINUTES, minutes)
         i.putExtra(AlarmClock.EXTRA_MESSAGE, title)
