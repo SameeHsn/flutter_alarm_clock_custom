@@ -118,7 +118,7 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
      * @param skipUi Boolean? AlarmClock.EXTRA_SKIP_UI (don't open the clock app)
      */
     private fun createAlarm(hour: Int, minutes: Int, title: String? = "", skipUi: Boolean? = true) {
-        android.util.Log.d(TAG, "createAlarm: is in method creating alarm")
+        Log.d(TAG, "createAlarm: is in method creating alarm")
         try {
         val randomId = Random().nextInt(Int.MAX_VALUE)
         val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
@@ -129,9 +129,7 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTriggerTime, pendingIntent)
 
-        AlarmReceiver().onReceive(context,intent)
-
-        android.util.Log.d(TAG, "createAlarm alarmTriggerTime: $alarmTriggerTime")
+        Log.d(TAG, "createAlarm alarmTriggerTime: $alarmTriggerTime")
         }
         catch (e: Exception) {
             Log.e("Excep in createAlarm:", e.toString())
@@ -146,9 +144,16 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
         Toast.makeText(context, "ALARM SET -----  ALARM  SET", Toast.LENGTH_SHORT).show()
 
-        AlarmManager.OnAlarmListener {
-            Toast.makeText(context, "is in alarm manager OnAlarmListener", Toast.LENGTH_SHORT).show()
-            android.util.Log.d("TAG", "createAlarm is in alarm manager: OnAlarmListener")
+        val alarmListener = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            object : AlarmManager.OnAlarmListener {
+                override fun onAlarm() {
+                    // Do your logic here
+                    Log.d("AlarmListener", "Alarm is ringing!")
+                }
+            }
+        } else {
+            Log.d("AlarmListener", "TODO(VERSION.SDK_INT < N)")
+            TODO("VERSION.SDK_INT < N")
         }
 
     }
