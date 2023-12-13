@@ -26,7 +26,6 @@ import android.widget.Toast;
 import java.util.Calendar;
 import android.widget.TimePicker;
 import android.src.main.kotlin.tk.sebastjanmevlja.flutter_alarm_clock.AlarmReceiver
-
 import android.os.Bundle
 import android.provider.Settings
 /** FlutterAlarmClockPlugin */
@@ -46,12 +45,15 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
     private val TAG = "FlutterAlarmClockPlugin"
 
+    var pendingIntent: PendingIntent? = null
+    var alarmManager: AlarmManager? = null
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_alarm_clock")
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
         android.util.Log.d(TAG, "onAttachedToEngine: ")
+        alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -121,25 +123,6 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
      * @param skipUi Boolean? AlarmClock.EXTRA_SKIP_UI (don't open the clock app)
      */
     private fun createAlarm(hour: Int, minutes: Int, title: String? = "", skipUi: Boolean? = true) {
-//        Log.d(TAG, "createAlarm: is in method creating alarm")
-//        try {
-//        val randomId = Random().nextInt(Int.MAX_VALUE)
-//        val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
-//        val intent = Intent(context, AlarmReceiver::class.java)
-//        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, randomId, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-//        // Set the alarm to trigger after 10 seconds (for demonstration)
-//        val alarmTriggerTime: Long = System.currentTimeMillis() + 60000 // 10 seconds
-//
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTriggerTime, pendingIntent)
-//
-//        Log.d(TAG, "createAlarm alarmTriggerTime: $alarmTriggerTime")
-//        }
-//        catch (e: Exception) {
-//            Log.e("Excep in createAlarm:", e.toString())
-//        }
-
-
-
         val i = Intent(AlarmClock.ACTION_SET_ALARM)
         i.putExtra(AlarmClock.EXTRA_HOUR, hour)
         i.putExtra(AlarmClock.EXTRA_MINUTES, minutes)
@@ -148,18 +131,27 @@ class FlutterAlarmClockPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         activity.startActivity(i)
 
         Toast.makeText(context, "ALARM SET -----  ALARM  SET", Toast.LENGTH_SHORT).show()
-
-//        val alarmListener = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            object : AlarmManager.OnAlarmListener {
-//                override fun onAlarm() {
-//                    // Do your logic here
-//                    Log.d("AlarmListener", "Alarm is ringing!")
-//                }
-//            }
-//        } else {
-//            Log.d("AlarmListener", "TODO(VERSION.SDK_INT < N)")
-//            TODO("VERSION.SDK_INT < N")
-//        }
+        var time: Long
+        val hasPermission: Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Log.d(TAG, "createAlarm: hasPermission if")
+            alarmManager!!.canScheduleExactAlarms()
+        } else {
+            Log.d(TAG, "createAlarm:hasPermission else")
+            TODO("VERSION.SDK_INT < S")
+        }
+        Toast.makeText(context, "ALARM ON", Toast.LENGTH_SHORT).show()
+        val calendar = Calendar.getInstance()
+        calendar[Calendar.HOUR_OF_DAY] = hour
+        calendar[Calendar.MINUTE] = minutes
+        val intent = Intent(context, AlarmReceiver::class.java).apply {  action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM }
+        pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        time = calendar.timeInMillis - calendar.timeInMillis % 60000
+        if (System.currentTimeMillis() > time) {
+            time =
+                if (Calendar.AM_PM == 0) time + 1000 * 60 * 60 * 12 else time + 1000 * 60 * 60 * 24
+        }
+        Log.d(TAG, "createAlarm: time:$time")
+        alarmManager!!.setRepeating(AlarmManager.RTC_WAKEUP, time, 10000, pendingIntent!!)
 
     }
 
